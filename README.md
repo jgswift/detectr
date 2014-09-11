@@ -1,6 +1,6 @@
 detectr
 ====
-PHP 5.5+ complex event processor 
+PHP 5.5+ complex event processor
 
 [![Build Status](https://travis-ci.org/jgswift/detectr.png?branch=master)](https://travis-ci.org/jgswift/detectr)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jgswift/detectr/badges/quality-score.png?s=4c1433cd4686440e0a8a2eb2a0d3aac9d2a62337)](https://scrutinizer-ci.com/g/jgswift/detectr/)
