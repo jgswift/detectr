@@ -80,7 +80,7 @@ namespace detectr\Detector {
          * @param mixed $sender
          * @param \observr\Event $e
          */
-        protected function trigger($sender, $e) {
+        public function trigger($sender, $e) {
             if(is_null($this->start_time)) {
                 $this->start_time = new \DateTime;
             } else {
