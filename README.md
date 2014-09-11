@@ -29,7 +29,7 @@ Install via composer.json using [composer](https://getcomposer.org/):
 
 ## Dependency
 
-* php 5.4+
+* php 5.5+
 * [jgswift/observr](http://github.com/jgswift/observr) - observer pattern using traits
 
 ## Usage
