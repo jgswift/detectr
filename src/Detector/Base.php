@@ -121,7 +121,7 @@ namespace detectr\Detector {
         /**
          * Emit triggered listeners
          * @param callable $name
-         * @param observr\Event $e
+         * @param \observr\Event $e
          */
         protected function emit(callable $name,$e=null) {
             if(!is_null($e)) {
@@ -135,7 +135,7 @@ namespace detectr\Detector {
         
         /**
          * Handles all listener criteria
-         * @param observr\Event $e
+         * @param \observr\Event $e
          */
         protected function handle($e) {
             if(empty($this->listeners)) {
