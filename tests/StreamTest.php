@@ -245,6 +245,181 @@ namespace detectr\Tests {
             $this->assertEquals(-1.5,$e['stdev']);
         }
         
+        function testStatsAggregateCount() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::COUNT)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(2,$e['count']);
+        }
+        
+        function testStatsAggregateSum() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::SUM)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(5,$e['sum']);
+        }
+        
+        function testStatsAggregateMin() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::MIN)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(1,$e['min']);
+        }
+        
+        function testStatsAggregateMax() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::MAX)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(4,$e['max']);
+        }
+        
+        function testStatsAggregateMean() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::MEAN)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(3,$e['mean']);
+        }
+        
+        function testStatsAggregateVariance() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::VARIANCE)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(8,$e['variance']);
+        }
+        
+        function testStatsAggregateStdev() {
+            $price = new detectr\Tests\Mock\Price;
+            
+            $detector = new detectr\Aggregate\Any(
+                    'receive',
+                    new detectr\Stats('value',detectr\Stats::STDEV)
+                );
+                
+            $detector->watch($price);
+            
+            $detector->open();
+            
+            $e = new observr\Event($price);
+            
+            $price->value = 1;
+            $price->setState('receive',$e);
+            
+            $price->value = 4;
+            $price->setState('receive',$e);
+            
+            $detector->close();
+            
+            $this->assertEquals(-1.5,$e['stdev']);
+        }
+        
         function testAggregateEvery() {
             $price = new detectr\Tests\Mock\Price;
             
