@@ -45,20 +45,20 @@ class User {
 
 $user = new User;
 
-$detector = new detectr\Aggregate\After(4,'login', function($sender,$e) {
-    // called after the login event is triggered 4 times
+$detector = new detectr\Aggregate\After(3,'login', function($sender,$e) {
+    // called after the login event is triggered 3 times
 });
 
-$detector->watch($user);
+$detector->watch($user); // instruct detector to watch specific user events
 
-$detector->open();
+$detector->open(); // open event stream
 
-$user->setState('login',new observr\Event($user));
+// trigger 'login' event 3 times
 $user->setState('login',new observr\Event($user));
 $user->setState('login',new observr\Event($user));
 $user->setState('login',new observr\Event($user));
 
-$detector->close();
+$detector->close(); // close event stream
 ```
 
 ### Any
@@ -85,6 +85,7 @@ $e = new observr\Event($price);
 
 $detector->open();
 
+// change prices and notify listener
 $price->value = 1;
 $price->setState('receive',$e);
 
@@ -99,6 +100,7 @@ $price->setState('receive',$e);
 
 $detector->close();
 
+// the observr\Event holds the final value
 var_dump($e['sum']); // 15
 ```
 
@@ -116,13 +118,14 @@ class Price {
 $price = new detectr\Tests\Mock\Price;
 
 $c=0;
-$detector = new detectr\Aggregate\Every(5,
+$detector = new detectr\Aggregate\Every(
+    5,
     function() {
         // triggered every 5 seconds
     }
 );
 
-$detector->addStream('receive');
+$detector->addStream('receive'); // stream is subordinate to timer and must be added separately
 
 $detector->watch($price);
 
@@ -130,7 +133,7 @@ $detector->open();
 
 $e = new observr\Event($price);
 
-for($i=0;$i<10000;$i++) {
+for($i=0;$i<10000;$i++) { // do something that takes a lot of time
     $price->setState('receive',$e);
 }
 
@@ -148,14 +151,14 @@ class User {
 
 $user = new User;
 
-$login = new observr\Stream('login');
-$logout = new observr\Stream('logout');
-
 $c = 0;
 
-$detector = new detectr\Stream([$login,$logout],function($sender,$e)use(&$c) {
-    $c++; // called twice
-});
+$detector = new detectr\Stream(
+    ['login','logout'],
+    function($sender,$e)use(&$c) {
+        $c++; // called twice
+    }
+);
 
 $detector->watch($user);
 
@@ -176,7 +179,7 @@ var_dump($c); // 2
 
 ### Within
 
-Limits detection to a certain time-span
+Limits detection to a certain time-span.  This limiter may be applied to any aggregator.
 
 ```php
 class User {
@@ -185,14 +188,14 @@ class User {
 
 $user = new User;
 
-$login = new observr\Stream('login');
-$logout = new observr\Stream('logout');
-
 $c = 0;
 
-$detector = new detectr\Stream([$login,$logout],function($sender,$e)use(&$c) {
-    $c++; // called once
-});
+$detector = new detectr\Stream(
+    ['login','logout'],
+    function($sender,$e)use(&$c) {
+        $c++; // called once
+    }
+);
 
 $detector->within(1,'s'); // only called if sequences occur within timespan
 
@@ -204,7 +207,10 @@ $detector->open();
 $user->setState('login',new observr\Event($user));
 $user->setState('logout',new observr\Event($user));
 
-sleep(1); // block processing for a second
+// block processing for a second
+// this block prevent the detection sequence from emitting for the second sequence
+// because it doesn't occur within enough time
+sleep(1); 
 
 // SECOND SEQUENCE
 $user->setState('login',new observr\Event($user));
