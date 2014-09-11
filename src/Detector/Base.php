@@ -134,48 +134,96 @@ namespace detectr\Detector {
         }
         
         /**
-         * Handles listener criteria
+         * Handles all listener criteria
          * @param observr\Event $e
          */
         protected function handle($e) {
+            if(empty($this->listeners)) {
+                return;
+            }
+            
             foreach($this->listeners as $name => $l) {
                 foreach($l as $listener) {
-                    switch($name) {
-                        case 'any':
-                            if($e->name == $listener[0] && $this->isWithin()) {
-                                $this->emit($listener[1],$e);
-                            }
-                            break;
-                        case 'after':
-                            if($e->name == $listener[1] && $this->amounts[$e->name] == $listener[0] && $this->isWithin()) {
-                                $this->amounts[$e->name] = 0;
-                                $this->emit($listener[2],$e);
-                            }
-                            break;
-                        case 'sequence':
-                            $valid = $this->findSequence($listener[0], array_slice($this->event_names,$this->sequence_start));
-                            
-                            if(!empty($valid) && $this->isWithin()) {
-                                $this->sequence_start = $valid[0][count($valid[0])-1]+1;
-                                $this->emit($listener[1],$e);
-                            }
-                            break;
-                        case 'every':
-                            if($this->start_elapse instanceof \DateTime) {
-                                $this->elapsed = new \DateTime;
-                                $diff = $this->start_elapse->diff($this->elapsed);
-                                if($diff->s >= $listener[0]) {
-                                    $this->emit($listener[1]);
-                                    $this->start_elapse = new \DateTime;
-                                }
-                            } else {
-                                $this->start_elapse = new \DateTime;
-                            }
-                            break;
-                        case 'within':
-                            continue;
-                    }
+                    $this->process($name,$listener,$e);
                 }
+            }
+        }
+        
+        /**
+         * Processes individual event listener
+         * @param string $name
+         * @param array $listener
+         * @param \observr\Event $e
+         */
+        protected function process($name,$listener,$e) {
+            switch($name) {
+                case 'any':
+                    $this->processAny($listener, $e);
+                    break;
+                case 'after':
+                    $this->processAfter($listener, $e);
+                    break;
+                case 'sequence':
+                    $this->processSequence($listener, $e);
+                    break;
+                case 'every':
+                    $this->processEvery($listener, $e);
+                    break;
+            }
+        }
+        
+        /**
+         * Process ANY event listener
+         * @param array $listener
+         * @param \observr\Event $e
+         */
+        private function processAny($listener,$e) {
+            if($e->name == $listener[0] && $this->isWithin()) {
+                $this->emit($listener[1],$e);
+            }
+        }
+        
+        /**
+         * Process AFTER event listener
+         * @param array $listener
+         * @param \observr\Event $e
+         */
+        private function processAfter($listener,$e) {
+            if($e->name == $listener[1] && $this->amounts[$e->name] == $listener[0] && $this->isWithin()) {
+                $this->amounts[$e->name] = 0;
+                $this->emit($listener[2],$e);
+            }
+        }
+        
+        /**
+         * Process SEQUENCE event listener
+         * @param array $listener
+         * @param \observr\Event $e
+         */
+        private function processSequence($listener,$e) {
+            $valid = $this->findSequence($listener[0], array_slice($this->event_names,$this->sequence_start));
+
+            if(!empty($valid) && $this->isWithin()) {
+                $this->sequence_start = $valid[0][count($valid[0])-1]+1;
+                $this->emit($listener[1],$e);
+            }
+        }
+        
+        /**
+         * Process EVERY periodic timer
+         * @param array $listener
+         * @param \observr\Event $e
+         */
+        private function processEvery($listener,$e) {
+            if($this->start_elapse instanceof \DateTime) {
+                $this->elapsed = new \DateTime;
+                $diff = $this->start_elapse->diff($this->elapsed);
+                if($diff->s >= $listener[0] && $this->isWithin()) {
+                    $this->emit($listener[1]);
+                    $this->start_elapse = new \DateTime;
+                }
+            } else {
+                $this->start_elapse = new \DateTime;
             }
         }
         
