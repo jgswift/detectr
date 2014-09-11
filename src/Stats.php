@@ -19,7 +19,7 @@ namespace detectr {
         /**
          * Create stat tracker
          * @param string $ask
-         * @param callable $fn
+         * @param string $fn
          */
         public function __construct($ask,$fn=null) {
             if(is_null($fn)) {

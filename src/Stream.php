@@ -155,7 +155,6 @@ namespace detectr {
             if(isset($this->listeners['within']) && 
                 $this->start_time instanceof \DateTime &&
                 $this->since_start instanceof \DateTime) {
-                $name = 'within';
                 foreach($this->listeners['within'] as $listener) {
                     list($increment,$period) = $listener;
                     $diff = $this->start_time->diff($this->since_start);
