@@ -1,7 +1,6 @@
 <?php
 namespace detectr {
     use observr;
-    use React\EventLoop as Loop;
     
     class Stream implements Detector {
         use observr\Subject;
@@ -38,31 +37,31 @@ namespace detectr {
         
         /**
          * DateTime to limit aggregation within timespan
-         * @var DateTime
+         * @var \DateTime
          */
         private $start_time;
         
         /**
          * DateTime to limit aggregation within timespan
-         * @var DateTime 
+         * @var \DateTime 
          */
         private $since_start;
         
         /**
          * DateTime to track periodic timer
-         * @var DateTime
+         * @var \DateTime
          */
         private $start_elapse;
         
         /**
          * DateTime to track periodic timer
-         * @var DateTime
+         * @var \DateTime
          */
         private $elapsed;
         
         /**
          * Tracks offset of last sequence
-         * @var type 
+         * @var integer 
          */
         private $sequence_start = 0;
         
@@ -85,8 +84,6 @@ namespace detectr {
                 
                 $this->setup();
             }
-            
-            $this->loop = Loop\Factory::create();
         }
         
         /**
