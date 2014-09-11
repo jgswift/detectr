@@ -1,5 +1,7 @@
 <?php
 namespace detectr\Detector {
+    use detectr;
+    
     abstract class Base implements detectr\Detector{
         /**
          * List of streams
